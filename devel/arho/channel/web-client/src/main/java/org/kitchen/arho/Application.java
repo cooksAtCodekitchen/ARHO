@@ -1,4 +1,4 @@
-package hello;
+package org.kitchen.arho;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
