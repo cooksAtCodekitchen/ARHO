@@ -1,4 +1,4 @@
-package hello;
+package org.kitchen.arho;
 
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestMapping;

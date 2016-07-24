@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>org.kitchen.arho</groupId>
+		<artifactId>arho-root</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>dist</artifactId>
+	<name>ARHO Distribution</name>
+	<description>ARHO Distribution</description>
+	<packaging>pom</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version><!--$NO-MVN-MAN-VER$-->
+				<executions>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<packagingExcludes>WEB-INF/lib/tomcat-*.jar</packagingExcludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${org.apache.commons.lang3.version}</version><!--$NO-MVN-MAN-VER$-->
+		</dependency>
+
+		
+		<dependency>
+			<groupId>com.nri.trading</groupId>
+			<artifactId>trading-ref</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading</groupId>
+			<artifactId>trading-ref-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading.oms</groupId>
+			<artifactId>oms-data-access</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading.oms</groupId>
+			<artifactId>oms-order</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading.oms</groupId>
+			<artifactId>oms-execution</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading.oms</groupId>
+			<artifactId>oms-mkt-adapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading.oms</groupId>
+			<artifactId>oms-web-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading.oms</groupId>
+			<artifactId>oms-rest</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading.oms</groupId>
+			<artifactId>oms-simulator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading.oms</groupId>
+			<artifactId>kronos-simulator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.nri.trading</groupId>
+			<artifactId>notification-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.nri.trading</groupId>
+			<artifactId>notification-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session</artifactId>
+			<version>${org.springframework.session.version}</version><!--$NO-MVN-MAN-VER$-->
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.ignite</groupId>
+			<artifactId>ignite-slf4j</artifactId>
+			<version>${org.apache.ignite.version}</version>
+		</dependency>
+		
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>prod</id>
+			<activation>
+				<property>
+					<name>prod</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.trecloux</groupId>
+						<artifactId>yeoman-maven-plugin</artifactId>
+						<version>0.5</version>
+						<executions>
+							<execution>
+								<id>run-frontend-build</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+								<configuration>
+									<buildTool>webpack</buildTool>
+									<buildArgs>build --force --no-color</buildArgs>
+									<!-- Stop bower install, providing only version -->
+									<bowerInstallArgs>--version</bowerInstallArgs>
+									<!--skipBuild>true</skipBuild -->
+									<skipTests>true</skipTests>
+								</configuration>
+							</execution>
+						</executions>
+						<configuration>
+							<yeomanProjectDirectory>../oms/channel/web-client</yeomanProjectDirectory>
+						</configuration>
+					</plugin>
+					<plugin>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.3</version>
+						<configuration>
+							<packagingExcludes>WEB-INF/lib/tomcat-*.jar</packagingExcludes>
+						</configuration>
+					</plugin>
+					<!--plugin> <artifactId>maven-clean-plugin</artifactId> <version>2.5</version> 
+						<configuration> <filesets> <fileset> <directory>src/main/webapp/dist</directory> 
+						</fileset> <fileset> <directory>.tmp</directory> </fileset> <fileset> <directory>node_modules</directory> 
+						</fileset> </filesets> </configuration> </plugin -->
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.nri.trading.OMSWebInitializer</mainClass>
+							<layout>WAR</layout>
+						</configuration>
+					</plugin>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.3</version>
+						<executions>
+							<execution>
+								<id>service</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>oms</finalName>
+									<appendAssemblyId>true</appendAssemblyId>
+									<descriptors>
+										<descriptor>src/main/assembly/common/oms-service.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>web</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>oms</finalName>
+									<appendAssemblyId>true</appendAssemblyId>
+									<descriptors>
+										<descriptor>src/main/assembly/prod/oms-web.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<!-- log configuration -->
+				<logback.loglevel>INFO</logback.loglevel>
+				<packaging.type>war</packaging.type>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>dev</name>
+				</property>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.3</version><!--$NO-MVN-MAN-VER$-->
+						<executions>
+							<execution>
+								<id>service</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>oms</finalName>
+									<appendAssemblyId>true</appendAssemblyId>
+									<descriptors>
+										<descriptor>src/main/assembly/common/oms-service.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>web</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>oms</finalName>
+									<appendAssemblyId>true</appendAssemblyId>
+									<descriptors>
+										<descriptor>src/main/assembly/dev/oms-web.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>http://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+</project>

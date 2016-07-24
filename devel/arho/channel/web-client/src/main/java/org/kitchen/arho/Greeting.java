@@ -1,4 +1,4 @@
-package hello;
+package org.kitchen.arho;
 
 public class Greeting {
 
